@@ -1,0 +1,40 @@
+version: "3"
+
+services:
+  api:
+    build: .
+    networks:
+      - api-network
+    depends_on:
+      - db
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - 3000:3000
+
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    networks:
+      - api-network
+    volumes:
+      - api-db:/var/lib/mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - api-network
+    depends_on:
+      - db
+
+networks:
+  api-network:
+    driver: bridge
+
+volumes:
+  api-db:
